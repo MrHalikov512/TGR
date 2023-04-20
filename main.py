@@ -1,8 +1,7 @@
-#pip install tabulate
 from tabulate import tabulate
 import random
 import os
-
+from tkinter import *
 def random_wepon(filename):
     with open(filename) as f:
         data = f.read().split(',')
@@ -21,32 +20,45 @@ def rvv1_2(variable): #random variable valiu 50%
     else:
         return 0
 
-def generator():
+class GeneratorGUI:
+    def __init__(self, master):
+        self.master = master
+        master.title("Weapon Generator")
 
-    HeadClass = random_wepon('head.txt')
-    BodyClass = random_wepon('body.txt')
-    PistolCaliber = random_wepon('pistol.txt')
-    Weapon = random_wepon('weapon.txt')
+        # create labels and buttons
+        self.label = Label(master, text="Click the button to generate a weapon:")
+        self.label.pack()
 
-    data = [[" ", "Name"],
-        ["Head Armor", rvv1_3(HeadClass)],
-        ["Body Armor", rvv1_3(BodyClass)],
-        ["Pisto", rvv1_2(PistolCaliber)],
-        ["Wepon", rvv1_3(Weapon)]
-    ]
+        self.generate_button = Button(master, text="Generate", command=self.generate_weapon)
+        self.generate_button.pack()
 
-    print(tabulate(data, headers='firstrow', tablefmt='grid'))
+        self.exit_button = Button(master, text="Exit", command=master.quit)
+        self.exit_button.pack()
 
-def work():
-    while True:
-        user_input = input("Wpisz 'next', aby wyświetlić wynik ponownie lub 'exit', aby zakończyć program: ")
-        if user_input == "exit":
-            print("Do zobaczenia!")
-            break
-        elif user_input == "next":
-            print(generator())
-        else:
-            print("Nieprawidłowe polecenie. Wpisz 'next', aby wyświetlić wynik ponownie lub 'exit', aby zakończyć program.")
+        # create a text box to display the generated weapon
+        self.text = Text(self.master)
+        self.text.pack()
 
+    def generate_weapon(self):
+        # clear the previous result
+        self.text.delete(1.0, END)
 
-work()
+        HeadClass = random_wepon('head.txt')
+        BodyClass = random_wepon('body.txt')
+        PistolCaliber = random_wepon('pistol.txt')
+        Weapon = random_wepon('weapon.txt')
+
+        data = [[" ", "Name"],
+                ["Head Armor", rvv1_3(HeadClass)],
+                ["Body Armor", rvv1_3(BodyClass)],
+                ["Pistol", rvv1_2(PistolCaliber)],
+                ["Weapon", rvv1_3(Weapon)]
+        ]
+
+        # display the generated weapon in the text box
+        self.text.insert(END, tabulate(data, headers='firstrow', tablefmt='grid'))
+
+# create the GUI
+root = Tk()
+gui = GeneratorGUI(root)
+root.mainloop()
